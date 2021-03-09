@@ -1,3 +1,4 @@
+
 ;; turn off emacs start message
 (setq inhibit-startup-message t)
 
@@ -9,10 +10,21 @@
 
 (menu-bar-mode -1)
 
+;; enable line numbers in buffers for code navigation
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;; disable line numbers for certain modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 ;; enable visual bell instead of audio error bell
 (setq visible-bell t)
 
-;; set font
+;; set fontv
 (set-face-attribute 'default nil :font "Fira Code Retina 12")
 
 ;; load theme
@@ -72,3 +84,33 @@
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t) ;; enable bold and italic universally
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
